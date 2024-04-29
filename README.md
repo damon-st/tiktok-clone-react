@@ -1,5 +1,23 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+# First setup .env
+
+```bash
+NEXT_PUBLIC_APPWRITE_URL="https://cloud.appwrite.io/v1"
+NEXT_PUBLIC_ENDPOINT=""
+NEXT_PUBLIC_DATABASE_ID=""
+
+NEXT_PUBLIC_COLLECTION_ID_PROFILE=""
+NEXT_PUBLIC_COLLECTION_ID_POST=""
+NEXT_PUBLIC_COLLECTION_ID_LIKE=""
+NEXT_PUBLIC_COLLECTION_ID_COMMENT=""
+
+NEXT_PUBLIC_BUCKET_NAME=""
+NEXT_PUBLIC_BUCKED_ID=""
+NEXT_PUBLIC_PLACEHOLDER_DEFAULT_IMAGE_ID=""
+
+```
+
 ## Getting Started
 
 First, run the development server:
