@@ -55,7 +55,7 @@ export default function TopNav() {
     <>
       <div
         id="TopNav"
-        className="fixed bg-white z-30 flex items-center w-full border-b h-[60px]"
+        className="fixed bg-white z-50 flex items-center w-full border-b h-[60px]"
       >
         <div
           className={clsx(

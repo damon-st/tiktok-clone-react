@@ -6,3 +6,130 @@
 html,body,:root{
     height: 100%;
 }
+
+
+#timeline{
+    width: 100%;
+    height: 150px;
+    display: flex;
+    overflow-x: auto;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  
+  .cursors{
+    position: absolute;
+    left: 0;
+    width: 100px;
+    height: 50px;
+    border: 5px #535bf2 solid;
+  }
+  
+  #videoPlayer, #videoPlayerTrim{
+    width: 100%;
+    height: 100%;
+    border-radius: 15px;
+  }
+  
+  .canvasMax{
+    width: 100px !important;
+  }
+  .canvasMin{
+    width: 10px !important;
+  }
+  #lineaProgresoLeft, #lineaProgresoRigth {
+      width: 10px; /* Ancho inicial de la línea */
+      height: 100px; /* Altura de la línea */
+      background-color: #535bf2; /* Color de la línea */
+      position: absolute; /* Posicionamiento absoluto */
+      cursor: col-resize; /* Cambiar el cursor a pointer */
+      z-index: 10;
+  }
+  
+  #lineaProgresoLeft{
+    left: 0;
+    border-top-left-radius: 15px;
+    border-bottom-left-radius: 15px;
+  }
+  #lineaProgresoRigth{
+    right: 0;
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
+  }
+  #lineaProgresoLeft:active{
+    background-color: black;
+  
+  }
+  #lineaProgresoRigth:active{
+    background-color: black;
+  }
+  
+  .contentTrim{
+    position: absolute;
+    width: 100%;
+    height: 60px;
+    border-radius: 15px;
+    background-color: #535bf276;
+    z-index: 9;
+    display: flex;
+    color: white;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  #timeSecondsTxt{
+    border-radius: 5px;
+    background-color: black;
+    padding: 2px;
+    box-shadow: #f9f9f9 1px 1px 5px;
+  }
+  
+  .contentIcon{
+    width: 100%;
+    height: 100%;
+    position: relative;
+  }
+  
+  .contentSec,.contentSecRigth{
+  display: none;
+    position: absolute;
+    min-width: 50px;
+    height: 20px;
+    border-radius: 5px;
+    background-color: #1a1a1a;
+    bottom: -15%;
+    left: -90%;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .contentSecRigth{
+    left: unset;
+    right: -50%;
+  }
+  
+  .containerT{
+    width: 100%;
+    height: 100%;
+    position: relative;
+  }
+  .loadingT{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background-color: #1a1a1a;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    align-items: center;
+    color: white;
+  }
+  .loadingT span{
+    width: 100%;
+    text-align: center;
+    font-size: 30px;
+  }

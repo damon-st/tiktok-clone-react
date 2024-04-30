@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { type UploadError } from "../types";
 import UploadLayout from "@/app/layouts/UploadLayout";
 import { BiLoaderCircle, BiSolidCloudUpload } from "react-icons/bi";
@@ -9,6 +9,9 @@ import { AiOutlineCheckCircle } from "react-icons/ai";
 import { PiKnifeLight } from "react-icons/pi";
 import { useUser } from "../context/user";
 import userCreatePost from "../hooks/useCreatePost";
+import CutVideo from "../components/upload/CutVideo";
+import { FFmpeg } from "@ffmpeg/ffmpeg";
+import { toBlobURL } from "@ffmpeg/util";
 
 export default function Upload() {
   const contextUser = useUser();
@@ -19,9 +22,44 @@ export default function Upload() {
   const [error, setError] = useState<UploadError | null>(null);
   const [isUploading, setIsUploading] = useState(false);
 
+  const [editVideo, setEditVideo] = useState(false);
+  const [loadFfmpe, setLoadFfmpe] = useState(false);
+  const ffmpegRef = useRef(new FFmpeg());
+
+  useEffect(() => {
+    loadfRM();
+  }, []);
+
   useEffect(() => {
     if (!contextUser?.user) router.push("/");
   }, [contextUser]);
+
+  const loadfRM = async () => {
+    try {
+      const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/esm";
+      const ffmpeg = ffmpegRef.current;
+      ffmpeg.on("log", ({ message }) => {
+        console.log(message);
+      });
+      // toBlobURL is used to bypass CORS issue, urls with the same
+      // domain can be used directly.
+      await ffmpeg.load({
+        coreURL: await toBlobURL(
+          `${baseURL}/ffmpeg-core.js`,
+          "text/javascript"
+        ),
+        wasmURL: await toBlobURL(
+          `${baseURL}/ffmpeg-core.wasm`,
+          "application/wasm"
+        ),
+      });
+      setLoadFfmpe(true);
+      console.log("[LOADED]");
+    } catch (error) {
+      setLoadFfmpe(false);
+      console.log("[ERROR_FMR]", error);
+    }
+  };
 
   const onClearVideo = () => {
     setFileDisplay("");
@@ -71,10 +109,33 @@ export default function Upload() {
     }
   };
 
+  const onTapEditVideo = () => {
+    if (!file) return;
+    setEditVideo((p) => !p);
+  };
+
+  const onCutVideo = (data: any) => {
+    const value = URL.createObjectURL(new Blob([data], { type: "video/mp4" }));
+    setFileDisplay(value);
+    setEditVideo(false);
+    setFile(new File([data], file?.name ?? "new video"));
+  };
+
   return (
     <>
       <UploadLayout>
-        <div className="w-full mt-[80px] mb-[40px] bg-white shadow-lg rounded-md py-6 md:px-10 px-4">
+        <div
+          id="containerUpload"
+          className=" relative w-full mt-[80px] mb-[40px] bg-white shadow-lg rounded-md py-6 md:px-10 px-4"
+        >
+          {editVideo && (
+            <CutVideo
+              onCutVideo={onCutVideo}
+              videoUrl={fileDisplay}
+              ffmpegRef={ffmpegRef.current}
+              onClose={onTapEditVideo}
+            />
+          )}
           <div>
             <h1 className="text-[23px] font-semibold">Upload video</h1>
             <h2 className="text-gray-400 mt-1">Post a video to your account</h2>
@@ -146,7 +207,7 @@ export default function Upload() {
                   className="absolute rounded-xl object-cover z-10 p-[13px] w-full h-full"
                   src={fileDisplay}
                 />
-                <div className="absolute -bottom-12 flex items-center justify-between z-50 rounded-xl border w-full p-2 border-gray-300">
+                <div className="absolute -bottom-12 flex items-center justify-between z-20 rounded-xl border w-full p-2 border-gray-300">
                   <div className="flex items-center truncate">
                     <AiOutlineCheckCircle size={16} className="min-w-[16px]" />
                     <p className="text-[11px] pl-1 truncate text-ellipsis">
@@ -164,7 +225,7 @@ export default function Upload() {
             )}
 
             <div className="mt-4 mb-6">
-              <div className="flex bg-[#F8F8F8] py-4 px-6">
+              <div className="flex bg-[#F8F8F8] py-4 px-6 ">
                 <div>
                   <PiKnifeLight className="mr-4" size={20} />
                 </div>
@@ -179,8 +240,12 @@ export default function Upload() {
                   </div>
                 </div>
                 <div className="flex justify-end max-w-[130px] w-full h-full text-center my-auto">
-                  <button className="px-8 py-1.5 text-white text-[15px] bg-[#F02C56] rounded-sm">
-                    Edit
+                  <button
+                    type="button"
+                    onClick={onTapEditVideo}
+                    className="px-8 py-1.5 text-white text-[15px] bg-[#F02C56] rounded-sm"
+                  >
+                    {loadFfmpe ? "Edit" : <BiLoaderCircle size={16} />}
                   </button>
                 </div>
               </div>
